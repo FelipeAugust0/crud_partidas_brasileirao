@@ -49,7 +49,8 @@ public class PartidaDAO {
                             casa,
                             fora,
                             rs.getTimestamp("data_hora_inicio").toLocalDateTime(),
-                            rs.getTimestamp("duracao_partida").toLocalDateTime()));
+                            rs.getTimestamp("duracao_partida").toLocalDateTime()
+                    ));
                 }
             }
 

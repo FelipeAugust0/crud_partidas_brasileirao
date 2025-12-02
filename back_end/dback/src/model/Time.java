@@ -5,7 +5,12 @@ public class Time {
     private String nome;
     private String serie;
 
-    public Time() {}
+    public Time() {
+    }
+
+    public Time(Long id_time) {
+        this.id_time = id_time;
+    }
 
     public Time(Long id_time, String nome, String serie) {
         this.id_time = id_time;
@@ -17,7 +22,7 @@ public class Time {
         return id_time;
     }
 
-    public void setId_time(Long id_time) {   // <- esse método PRECISA existir
+    public void setId_time(Long id_time) {
         this.id_time = id_time;
     }
 

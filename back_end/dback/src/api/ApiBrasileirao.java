@@ -7,9 +7,14 @@ import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.put;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
 
 import dao.PartidaDAO;
 import dao.TimeDAO;
@@ -20,7 +25,21 @@ public class ApiBrasileirao {
 
     private static final TimeDAO timeDAO = new TimeDAO();
     private static final PartidaDAO partidaDAO = new PartidaDAO();
-    private static final Gson gson = new Gson();
+
+    // ================================
+    // GSON COM SUPORTE A LocalDateTime
+    // ================================
+    private static final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, 
+                (JsonSerializer<LocalDateTime>) (src, typeOfSrc, context) ->
+                        new JsonPrimitive(src.toString())
+            )
+            .registerTypeAdapter(LocalDateTime.class,
+                (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) ->
+                        LocalDateTime.parse(json.getAsString())
+            )
+            .create();
+
     private static final String APPLICATION_JSON = "application/json";
 
     public static void main(String[] args) {
@@ -29,9 +48,20 @@ public class ApiBrasileirao {
 
         after((request, response) -> response.type(APPLICATION_JSON));
 
-        // =============================
-        // ROTAS TIME
-        // =============================
+        System.out.println("API BRASILEIRÃO rodando em http://localhost:4567/");
+        System.out.println("Rotas disponíveis:");
+        System.out.println("GET  /times");
+        System.out.println("GET  /times/:id");
+        System.out.println("GET  /times/serie/:serie");
+        System.out.println("GET  /partidas/:id");
+        System.out.println("GET  /partidas/serie/:serie");
+        System.out.println("POST /partidas");
+        System.out.println("PUT  /partidas/:id");
+        System.out.println("DELETE /partidas/:id");
+
+        // ===================================
+        // ROTAS - TIMES
+        // ===================================
 
         // GET /times
         get("/times", (req, res) -> gson.toJson(timeDAO.buscarTodos()));
@@ -42,13 +72,10 @@ public class ApiBrasileirao {
                 Long id = Long.parseLong(req.params(":id"));
                 Time time = timeDAO.buscarPorId(id);
 
-                if (time != null) {
-                    return gson.toJson(time);
-                }
+                if (time != null) return gson.toJson(time);
 
                 res.status(404);
                 return "{\"mensagem\":\"Time não encontrado\"}";
-
             } catch (Exception e) {
                 res.status(400);
                 return "{\"mensagem\":\"ID inválido\"}";
@@ -58,44 +85,40 @@ public class ApiBrasileirao {
         // GET /times/serie/:serie
         get("/times/serie/:serie", (req, res) -> {
             try {
-                String serie = req.params(":serie"); // "A", "B" ou "C"
-                List<Time> times = timeDAO.buscarPorSerie(serie); // chama o método do DAO
+                String serie = req.params(":serie").toUpperCase();
+                List<Time> times = timeDAO.buscarPorSerie(serie);
 
                 if (times != null && !times.isEmpty()) {
-                    res.type("application/json");
                     return gson.toJson(times);
                 }
 
                 res.status(404);
                 return "{\"mensagem\":\"Nenhum time encontrado para a série " + serie + "\"}";
-
             } catch (Exception e) {
                 res.status(500);
                 return "{\"mensagem\":\"Erro ao buscar times por série\"}";
             }
         });
 
-        // =============================
-        // ROTAS PARTIDA
-        // =============================
+        // ===================================
+        // ROTAS – PARTIDAS
+        // ===================================
 
         // GET /partidas/serie/:serie
         get("/partidas/serie/:serie", (req, res) -> {
             try {
-                String serie = req.params(":serie");
+                String serie = req.params(":serie").toUpperCase();
                 List<Partida> partidas = partidaDAO.buscarPorSerie(serie);
 
                 if (partidas != null && !partidas.isEmpty()) {
-                    res.type("application/json");
                     return gson.toJson(partidas);
                 }
 
                 res.status(404);
                 return "{\"mensagem\":\"Nenhuma partida encontrada para essa série\"}";
-
             } catch (Exception e) {
                 res.status(400);
-                return "{\"mensagem\":\"Erro ao buscar por série\"}";
+                return "{\"mensagem\":\"Erro ao buscar partidas\"}";
             }
         });
 
@@ -105,13 +128,10 @@ public class ApiBrasileirao {
                 Long id = Long.parseLong(req.params(":id"));
                 Partida p = partidaDAO.buscarPorId(id);
 
-                if (p != null) {
-                    return gson.toJson(p);
-                }
+                if (p != null) return gson.toJson(p);
 
                 res.status(404);
                 return "{\"mensagem\":\"Partida não encontrada\"}";
-
             } catch (Exception e) {
                 res.status(400);
                 return "{\"mensagem\":\"ID inválido\"}";
@@ -122,13 +142,27 @@ public class ApiBrasileirao {
         post("/partidas", (req, res) -> {
             try {
                 Partida nova = gson.fromJson(req.body(), Partida.class);
+
+                if (nova.getTimeCasa() == null || nova.getTimeFora() == null) {
+                    res.status(400);
+                    return "{\"mensagem\":\"Times não podem ser nulos\"}";
+                }
+
+                if (nova.getDataHoraInicio() == null) {
+                    res.status(400);
+                    return "{\"mensagem\":\"Data/hora de início é obrigatória\"}";
+                }
+
                 partidaDAO.inserir(nova);
+
                 res.status(201);
+                res.header("Location", "/partidas/" + nova.getId());
                 return gson.toJson(nova);
 
             } catch (Exception e) {
+                e.printStackTrace();
                 res.status(500);
-                return "{\"mensagem\":\"Erro ao inserir partida\"}";
+                return "{\"mensagem\":\"Erro interno ao inserir partida\"}";
             }
         });
 
@@ -173,9 +207,5 @@ public class ApiBrasileirao {
                 return "{\"mensagem\":\"Erro ao excluir partida\"}";
             }
         });
-
-        System.out.println("API BRASILEIRÃO rodando em http://localhost:4567/");
-        System.out.println("/times");
-        System.out.println("/partidas");
     }
 }
