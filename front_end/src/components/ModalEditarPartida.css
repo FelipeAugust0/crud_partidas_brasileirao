@@ -1,0 +1,101 @@
+/* Fundo escuro atrás do modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 70, 0, 0.25);
+    backdrop-filter: blur(18px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999 !important;
+}
+
+/* Caixa principal do modal */
+.modal-box {
+    background: #fff;
+    padding: 18px 22px;
+    border-radius: 14px;
+    width: 340px;
+    max-width: 90%;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.12);
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    animation: slideUp 0.22s ease-out;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* Título do modal */
+.modal-box h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #145c2f;
+}
+
+/* Campos do formulário do modal */
+.modal-box input,
+.modal-box select {
+    width: 240px;
+    max-width: 100%;
+    align-self: center;
+
+    padding: 7px 10px;
+    border-radius: 10px;
+    border: 1.4px solid #2f9a4f;
+    font-size: 14px;
+
+    background: #fdfdfd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Área dos botões */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Botões do modal */
+.btn-save,
+.btn-cancel {
+    padding: 7px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s ease;
+}
+
+/* Botão salvar */
+.btn-save {
+    background: #34b563;
+    color: white;
+}
+.btn-save:hover {
+    background: #2fa75a;
+}
+
+/* Botão cancelar */
+.btn-cancel {
+    background: #9d9d9d;
+    color: #fff;
+}
+.btn-cancel:hover {
+    background: #8c8c8c;
+}
+
+/* Animação do modal aparecendo */
+@keyframes slideUp {
+    from {
+        transform: translateY(18px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

@@ -1,0 +1,82 @@
+/* Área principal do topo da página: cor de fundo, espaçamento e alinhamento */
+.top-header {
+    background: #0c9b3a;
+    color: #fff;
+    padding: 12px 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-family: "Segoe UI", sans-serif;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Agrupa o título com o box laranja da Betano */
+.header-left-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Estilo do título principal do header */
+.header-title {
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+/* Caixa do texto BETANO */
+.betano-box {
+    background: #ff6600;
+    padding: 6px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+    box-shadow: 0 0 7px rgba(255, 102, 0, 0.3);
+
+    font-size: 28px;
+
+}
+
+/* Área da direita do header (botões) */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Estilo base dos botões do header */
+.nav-btn {
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s ease;
+    text-decoration: none;
+}
+
+/* Botão branco (principal) */
+.nav-primary {
+    background: #ffffff;
+    color: #0c9b3a;
+}
+
+.nav-primary:hover {
+    background: #e8ffe8;
+    transform: translateY(-2px);
+}
+
+/* Botão transparente com borda */
+.nav-secondary {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.nav-secondary:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateY(-2px);
+}

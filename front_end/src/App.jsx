@@ -1,18 +1,19 @@
+import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import NavBar from "./components/NavBar";
-import Times from "./pages/Times";
-import Partidas from "./pages/Partidas";
-import NovaPartida from "./pages/NovaPartida";
+
+import Header from "./components/Header.jsx";
+
+import Home from "./pages/Home";
+import GerenciarPartidas from "./pages/GerenciarPartidas";
 
 export default function App() {
   return (
     <BrowserRouter>
-      <NavBar />
+      <Header />
 
       <Routes>
-        <Route path="/" element={<Times />} />
-        <Route path="/partidas" element={<Partidas />} />
-        <Route path="/nova-partida" element={<NovaPartida />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/gerenciar" element={<GerenciarPartidas />} />
       </Routes>
     </BrowserRouter>
   );
